@@ -87,9 +87,11 @@ public class M2SysResponseTest {
         List<BiometricMatch> matches = response.toMatchList();
 
         assertNotNull(matches);
-        assertEquals(1, matches.size());
-        assertEquals(75.0, matches.get(0).getMatchScore(), 0.0);
-        assertEquals("test", matches.get(0).getSubjectId());
+        assertEquals(2, matches.size());
+        assertEquals(0.0, matches.get(0).getMatchScore(), 0.0);
+        assertEquals("empty", matches.get(0).getSubjectId());
+        assertEquals(75.0, matches.get(1).getMatchScore(), 0.0);
+        assertEquals("test", matches.get(1).getSubjectId());
     }
 
     @Test(expected = M2SysBiometricsException.class)

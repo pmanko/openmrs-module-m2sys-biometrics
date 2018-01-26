@@ -113,4 +113,19 @@ public class BioServerClient extends WebServiceGatewaySupport {
 
         return response.getIsRegisteredResult();
     }
+
+    public String verify(String serviceUrl, int locationId, String leftTemplate,
+                         String rightTemplate, String subjectId) {
+        Verify verify = new Verify();
+
+        verify.setID(subjectId);
+        verify.setLocationID(locationId);
+        verify.setLeftCaptureTemplate(leftTemplate);
+        verify.setRightCaptureTemplate(rightTemplate);
+
+        VerifyResponse respose = (VerifyResponse) getWebServiceTemplate()
+                .marshalSendAndReceive(serviceUrl, verify);
+
+        return respose.getVerifyResult();
+    }
 }

@@ -8,6 +8,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.module.m2sysbiometrics.M2SysBiometricSensitiveTestBase;
 import org.openmrs.module.m2sysbiometrics.M2SysBiometricsConstants;
 import org.openmrs.module.m2sysbiometrics.M2SysEngine;
+import org.openmrs.module.m2sysbiometrics.bioplugin.BioServerClient;
 import org.openmrs.module.m2sysbiometrics.http.M2SysHttpClient;
 import org.openmrs.module.registrationcore.api.biometrics.model.BiometricMatch;
 import org.openmrs.module.registrationcore.api.biometrics.model.BiometricSubject;
@@ -36,6 +37,9 @@ public class M2SysIT extends M2SysBiometricSensitiveTestBase {
 
     @Autowired
     private AdministrationService adminService;
+
+    @Autowired
+    private BioServerClient bioServerClient;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -66,14 +70,20 @@ public class M2SysIT extends M2SysBiometricSensitiveTestBase {
     @Test
     //@Ignore
     public void test() {
-        BiometricSubject subject = new BiometricSubject("SEARCH_TEST");
+        BiometricSubject subject = new BiometricSubject("SEARCH_TEST2");
+        //engine.delete(subject.getSubjectId());
         //engine.enroll(subject);
+
+        bioServerClient.isRegistered(System.getenv("m2sys-biometrics.local-service.url"),
+                "MPTT");
 
 /*        subject = engine.enroll(subject);
         subject = engine.update(subject);*/
+        //List<BiometricMatch> matches = engine.search(subject);
+        engine.enroll(subject);
 
-        List<BiometricMatch> matches = engine.search(subject);
-        assertNotNull(matches);
+        //List<BiometricMatch> matches = engine.search(subject);
+        //assertNotNull(matches);
     }
 
     private void replaceJacksonMessageConverter() {

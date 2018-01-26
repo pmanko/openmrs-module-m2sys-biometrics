@@ -33,9 +33,7 @@ public class ResultContentHandler extends DefaultHandler {
                 result.setInstance(Integer.parseInt(instance));
             }
 
-            if (!result.isEmpty()) {
-                results.addResult(result);
-            }
+            results.addResult(result);
         } else {
             super.startElement(uri, localName, qName, attributes);
         }
