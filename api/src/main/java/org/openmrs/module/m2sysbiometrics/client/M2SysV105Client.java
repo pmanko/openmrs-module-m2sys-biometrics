@@ -1,7 +1,6 @@
 package org.openmrs.module.m2sysbiometrics.client;
 
-import static org.openmrs.module.m2sysbiometrics.util.M2SysClientUtil.searchMostFitBiometricSubject;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.module.m2sysbiometrics.M2SysBiometricsConstants;
 import org.openmrs.module.m2sysbiometrics.bioplugin.LocalBioServerClient;
 import org.openmrs.module.m2sysbiometrics.bioplugin.NationalBioServerClient;
@@ -28,6 +27,8 @@ import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.util.List;
+
+import static org.openmrs.module.m2sysbiometrics.util.M2SysClientUtil.searchMostFitBiometricSubject;
 
 @Component("m2sysbiometrics.M2SysV1Client")
 public class M2SysV105Client extends AbstractM2SysClient {
@@ -105,8 +106,16 @@ public class M2SysV105Client extends AbstractM2SysClient {
 
     @Override
     public List<BiometricMatch> search() {
-        M2SysCaptureResponse capture = scanDoubleFingers();
-        return M2SysClientUtil.search(capture, localBioServerClient);
+        M2SysCaptureResponse fingerScan = scanDoubleFingers();
+        List<BiometricMatch> results = M2SysClientUtil.search(fingerScan, localBioServerClient);
+        if (CollectionUtils.isEmpty(results)) {
+           BiometricMatch nationalResult = M2SysClientUtil.searchMostAdequate(fingerScan, nationalBioServerClient);
+           if (nationalResult != null) {
+               registrationService.fetchFromNational(new BiometricSubject(nationalResult.getSubjectId()), fingerScan);
+               results.add(nationalResult);
+           }
+        }
+        return results;
     }
 
     @Override
