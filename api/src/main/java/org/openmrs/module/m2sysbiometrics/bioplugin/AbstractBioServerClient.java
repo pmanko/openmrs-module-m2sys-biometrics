@@ -2,17 +2,20 @@ package org.openmrs.module.m2sysbiometrics.bioplugin;
 
 import org.openmrs.module.m2sysbiometrics.M2SysBiometricsConstants;
 import org.openmrs.module.m2sysbiometrics.util.M2SysProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.ws.WebServiceException;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
-
 import javax.annotation.PostConstruct;
 
 public abstract class AbstractBioServerClient extends WebServiceGatewaySupport implements BioServerClient {
 
     private static final String LOCATION_ID_PROPERTY = M2SysBiometricsConstants.M2SYS_LOCATION_ID;
+    private static final Logger logger = LoggerFactory.getLogger(AbstractBioServerClient.class);
 
     @Autowired
     @Qualifier("m2sysbiometrics.jax2b")
@@ -42,10 +45,10 @@ public abstract class AbstractBioServerClient extends WebServiceGatewaySupport i
         RegisterResponse response;
         try {
             response = (RegisterResponse) getResponse(register);
+        }catch (Exception ex) {
+            logger.error(ex.getMessage());
+        	return null;
         }
-        catch (Exception ex) {
-        	return ex.getMessage();
-            }
         return response.getRegisterResult();
     }
 
@@ -111,7 +114,7 @@ public abstract class AbstractBioServerClient extends WebServiceGatewaySupport i
 
     protected abstract String getServerUrlPropertyName();
 
-    protected abstract Object getResponse(Object requestPayload);
+    protected abstract Object getResponse(Object requestPayload) throws WebServiceException;
 
     protected String getProperty(String propertyName) {
         return properties.getGlobalProperty(propertyName);

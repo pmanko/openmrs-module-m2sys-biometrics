@@ -37,6 +37,11 @@ Currently the module uses the **V8** version of the service.
 
 ## Configuration variables
 
+### Template if no scanner exists
+
+If no fingerprint scanner exists, simulations may be performed using a pre-loaded fingerprint template to be stored as a global property:
+m2sys-biometrics.server.constTestTemplate - String representation of the fingerprint template
+
 ### Local variables
 m2sys-biometrics.accessPointID - The m2sys server AccessPointID<br/>
 m2sys-biometrics.accessPointMap - A map of IP addresses to Access Point IDs. Has format of IP1:AccessPointID1;IP2:AccessPointID2;...
@@ -46,6 +51,7 @@ m2sys-biometrics.customKey - The m2sys server CustomKey<br/>
 m2sys-biometrics.locationID - The m2sys server location ID<br/>
 m2sys-biometrics.server.password - The m2sys server password<br/>
 m2sys-biometrics.server.url - The m2sys server url<br/>
+m2sys-biometrics.device.name - The m2sys fingerprint scanning device name<br/>
 m2sys-biometrics.server.user - The m2sys server username<br/>
 m2sys-biometrics.local-service.url - The URL to the SOAP service of the local (local to the clinic) M2Sys BioPlugin Server.
 
